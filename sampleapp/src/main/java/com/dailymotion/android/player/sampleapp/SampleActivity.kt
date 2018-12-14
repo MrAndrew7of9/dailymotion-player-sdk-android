@@ -23,6 +23,7 @@ import java.util.HashMap
 class SampleActivity : AppCompatActivity(), View.OnClickListener {
 
     private var mFullscreen = false
+    private var mNeedsToReload = false
 
     fun onFullScreenToggleRequested() {
         setFullScreenInternal(!mFullscreen)
@@ -164,6 +165,16 @@ class SampleActivity : AppCompatActivity(), View.OnClickListener {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             dm_player_web_view.onPause()
+            //determine if player has started by getting buffered time
+            if (dm_player_web_view.getBufferedTime() == 0.0) {
+                //if not buffered, loads null to prevent background loading and playing on devices 
+                //if the user leaves the activity before the player fully loads
+                dm_player_web_view.load(null)
+                mNeedsToReload = true
+            } else {
+                mNeedsToReload = false
+                dm_player_web_view.onPause()
+            }
         }
     }
 
@@ -171,6 +182,14 @@ class SampleActivity : AppCompatActivity(), View.OnClickListener {
         super.onResume()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            //check if reloading video is necessary
+            if (mNeedsToReload) {
+                //reloads video with given id and params
+                val playerParams = HashMap<String, String>()
+                dm_player_web_view.load("x26hv6c", playerParams as Map<String, Any>?)
+                dm_player_web_view.setPlayWhenReady(true)
+                mNeedsToReload = false
+            }
             dm_player_web_view.onResume()
         }
     }
