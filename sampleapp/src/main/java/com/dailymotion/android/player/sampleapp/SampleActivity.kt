@@ -163,7 +163,6 @@ class SampleActivity : AppCompatActivity(), View.OnClickListener {
         super.onPause()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            dm_player_web_view.onPause()
             dm_player_web_view.setVisible(false)
         }
     }
@@ -172,7 +171,6 @@ class SampleActivity : AppCompatActivity(), View.OnClickListener {
         super.onResume()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            dm_player_web_view.onResume()
             dm_player_web_view.setVisible(true)
         }
     }
